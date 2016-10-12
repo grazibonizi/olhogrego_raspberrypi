@@ -8,10 +8,6 @@ import threading
 
 class VideoRecorder(object):
     def __init__(self):
-        # this is where one sets how long the script
-        # sleeps for, between frames.sleeptime__in_seconds = 0.05
-        # initialise the display window
-        self.screen = pygame.display.set_mode([800, 420])
         pygame.init()
         pygame.camera.init()
         # set up a camera object
@@ -24,18 +20,12 @@ class VideoRecorder(object):
             try:
                  # fetch the camera image
                 image = self.cam.get_image()
-                # blank out the screen
-                self.screen.fill([0, 0, 0])
-                # copy the camera image to the screen
-                self.screen.blit(image, (100, 0))
-                # update the screen to show the latest screen image
-                pygame.display.update()
                 #save picture
                 instante = str(int(round(time.time() * 1000)))
                 imgAtual = '../tmp/' + instante + '.jpg'
                 pygame.image.save(image, imgAtual)
                 # sleep between every frame
-                time.sleep(0.16)
+                time.sleep(0.5)
                 if self.stop_recording == 1:
                     break
             except KeyboardInterrupt:
@@ -44,11 +34,14 @@ class VideoRecorder(object):
 
     def stop(self):
         self.stop_recording = 1
-        time.sleep(0.5)
-        self.cam.stop()
-        pygame.quit()
+
+    def prepare(self):
+        self.cam.start()
 
     def start(self):
         video_thread = threading.Thread(target=self.record)
-        self.cam.start()
-        return video_thread
+        video_thread.start()
+
+    def cleanup(self):
+        self.cam.stop()
+        pygame.quit()

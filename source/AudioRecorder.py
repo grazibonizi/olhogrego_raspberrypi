@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 import pyaudio
 import wave
-import threading
-import time
+#import time
 
 
 class AudioRecorder(object):
@@ -13,32 +13,38 @@ class AudioRecorder(object):
         self.CHANNELS = 2
         self.RATE = 44100
         self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(format=self.FORMAT,
-                        channels=self.CHANNELS,
-                        rate=self.RATE,
-                        input=True,
-                        frames_per_buffer=self.CHUNK)
         path = '../tmp/'
         fileName = 'temp_audio'
         self.WAVE_OUTPUT_FILENAME = path + fileName + ".wav"
         self.frames = []
+        self.keep_recording = 0
         self.stop_recording = 0
 
-    def record(self):
+    def callback(self, in_data, frame_count, time_info, status):
+        if (self.keep_recording == 1):
+            self.frames.append(in_data)
+        if(self.stop_recording == 0):
+            return in_data, pyaudio.paContinue
+        else:
+            return in_data, pyaudio.paComplete
+
+    def start(self):
+        self.stream.start_stream()
+        self.keep_recording = 1
         print("* recording audio")
-        while 1:
-            try:
-                data = self.stream.read(self.CHUNK)
-                self.frames.append(data)
-                if self.stop_recording == 1:
-                    break
-            except KeyboardInterrupt:
-                break
-        print("* done recording audio")
+
+    def prepare(self):
+        self.stream = self.p.open(format=self.FORMAT,
+                        channels=self.CHANNELS,
+                        rate=self.RATE,
+                        input=True,
+                        frames_per_buffer=self.CHUNK,
+                        stream_callback=self.callback)
 
     def stop(self):
         self.stop_recording = 1
-        time.sleep(0.5)
+
+    def cleanup(self):
         self.stream.stop_stream()
         self.stream.close()
         self.p.terminate()
@@ -48,7 +54,4 @@ class AudioRecorder(object):
         wf.setframerate(self.RATE)
         wf.writeframes(b''.join(self.frames))
         wf.close()
-
-    def start(self):
-        audio_thread = threading.Thread(target=self.record)
-        return audio_thread
+        print("* done recording audio")

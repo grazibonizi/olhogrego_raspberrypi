@@ -1,5 +1,5 @@
 # -- coding: utf-8 --
-#from VideoRecorder import VideoRecorder
+from VideoRecorder import VideoRecorder
 from AudioRecorder import AudioRecorder
 import threading
 import time
@@ -12,22 +12,23 @@ class OccurenceRecorder(object):
     def __init__(self):
         self.clean_tmp_folder()
         self.audioRecorder = AudioRecorder()
-        #self.videoRecorder = VideoRecorder()
-        self.filename = "gravacao"
+        self.videoRecorder = VideoRecorder()
 
     def start_recording(self):
-        audio_thread = self.audioRecorder.start()
-        #video_thread = self.videoRecorder.start()
-        #waits camera's 'initialization
-        time.sleep(0.5)
-        audio_thread.start()
-        #video_thread.start()
+        self.audioRecorder.prepare()
+        self.videoRecorder.prepare()
+        #waits initialization
+        time.sleep(1)
+        self.videoRecorder.start()
+        self.audioRecorder.start()
 
     def stop_recording(self):
         self.audioRecorder.stop()
-        #self.videoRecorder.stop()
+        self.videoRecorder.stop()
         while threading.active_count() > 1:
-            time.sleep(0.5)
+            time.sleep(0.1)
+        self.audioRecorder.cleanup()
+        self.videoRecorder.cleanup()
 
     def clean_tmp_folder(self):
         folder = "../tmp"
