@@ -10,16 +10,14 @@ class AudioRecorder(object):
 
         self.CHUNK = 1024
         self.FORMAT = pyaudio.paInt16
-        self.CHANNELS = 1
+        self.CHANNELS = 2
         self.RATE = 44100
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(format=self.FORMAT,
                         channels=self.CHANNELS,
                         rate=self.RATE,
                         input=True,
-                        input_device_index=2,
                         frames_per_buffer=self.CHUNK)
-        #nome do arquivo de audio
         path = '../tmp/'
         fileName = 'temp_audio'
         self.WAVE_OUTPUT_FILENAME = path + fileName + ".wav"
