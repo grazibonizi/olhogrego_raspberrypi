@@ -13,8 +13,7 @@ class OccurenceRecorder(object):
     def __init__(self):
         self.folder_path = "../tmp"
         self.zip_file = "file.zip"
-        zipdir(self.folder_path, self. zip_file)
-        #self.clean_tmp_folder()
+        self.clean_tmp_folder()
         self.audioRecorder = AudioRecorder()
         self.videoRecorder = VideoRecorder()
 
