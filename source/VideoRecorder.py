@@ -10,9 +10,8 @@ class VideoRecorder(object):
     def __init__(self):
         pygame.init()
         pygame.camera.init()
-        # set up a camera object
         self.cam = pygame.camera.Camera("/dev/video0", (640, 480))
-        self.stop_recording = 0
+        self.cam.start()
 
     def record(self):
         print("* recording video")
@@ -36,12 +35,13 @@ class VideoRecorder(object):
         self.stop_recording = 1
 
     def prepare(self):
-        self.cam.start()
+        self.stop_recording = 0
 
     def start(self):
         video_thread = threading.Thread(target=self.record)
         video_thread.start()
 
     def cleanup(self):
-        self.cam.stop()
-        pygame.quit()
+        pass
+        #self.cam.stop()
+        #pygame.quit()

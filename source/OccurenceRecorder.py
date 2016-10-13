@@ -12,16 +12,16 @@ class OccurenceRecorder(object):
 
     def __init__(self):
         self.folder_path = "../tmp"
-        self.zip_file = "file.zip"
-        self.clean_tmp_folder()
+        self.zip_file = "../file.zip"
         self.audioRecorder = AudioRecorder()
         self.videoRecorder = VideoRecorder()
 
     def start_recording(self):
+        self.clean_tmp_folder()
         self.audioRecorder.prepare()
         self.videoRecorder.prepare()
         #waits initialization
-        time.sleep(1)
+        time.sleep(0.5)
         self.videoRecorder.start()
         self.audioRecorder.start()
 

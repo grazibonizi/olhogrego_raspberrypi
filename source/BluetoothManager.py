@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import time
+#import time
 from bluetooth import *
 from OccurenceRecorder import OccurenceRecorder
+#from lightblue import *
 
 
 class BluetoothManager(object):
@@ -21,18 +22,18 @@ class BluetoothManager(object):
     def run(self):
         print(("Waiting for connection on RFCOMM channel %d" % self.port))
         client_sock, client_info = self.server_sock.accept()
-        print(("Connected to %r" % client_sock))
+        print(("Connected to %s" % client_info[0]))
         while True:
             try:
                 data = client_sock.recv(1024)
                 if len(data) > 0:
                     print(("received [%s]" % data))
                     if data == 'Iniciar':
-                        data = ('Iniciando gravacao as %s' % time.localtime())
+                        data = ('Iniciando gravacao')
                         self.occurenceRecorder.start_recording()
                     elif data == 'Finalizar':
-                        data = ('Finalizando gravacao as %s' % time.localtime())
                         self.occurenceRecorder.stop_recording()
+                        data = self.readfile("file.zip")
                     else:
                         data = 'Comando nao reconhecido'
                     client_sock.send(data)
@@ -48,3 +49,17 @@ class BluetoothManager(object):
                 print("all done")
 
                 break
+
+    #def getservice(self, target_address):
+        #services = lightblue.findservices(target_address)
+        #for service in services:
+            #if service[2] == "OBEX Object Push":
+                #obex_port = service[1]
+            #break
+        #return obex_port
+
+    def readfile(self, filename):
+        in_file = open(filename, "rb")
+        in_bytes = in_file.read()
+        in_file.close()
+        return in_bytes
