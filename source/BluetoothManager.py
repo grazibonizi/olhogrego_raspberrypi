@@ -33,7 +33,7 @@ class BluetoothManager(object):
                         self.occurenceRecorder.start_recording()
                     elif data == 'Finalizar':
                         self.occurenceRecorder.stop_recording()
-                        data = self.readfile("file.zip")
+                        data = self.readfile("../tmp/file.zip")
                     else:
                         data = 'Comando nao reconhecido'
                     client_sock.send(data)
