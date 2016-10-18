@@ -29,15 +29,15 @@ class BluetoothManager(object):
                 if len(data) > 0:
                     print(("received [%s]" % data))
                     if data == 'Iniciar':
-                        data = ('Iniciando gravacao')
+                        print('Iniciando gravacao')
                         self.occurenceRecorder.start_recording()
                     elif data == 'Finalizar':
                         self.occurenceRecorder.stop_recording()
-                        data = self.readfile("../tmp/file.zip")
+                        data = self.readfile("file.zip")
+                        client_sock.send(data)
+                        print('Arquivo enviado')
                     else:
-                        data = 'Comando nao reconhecido'
-                    client_sock.send(data)
-                    print(("sending [%s]" % data))
+                        print('Comando nao reconhecido')
 
             except IOError:
                 pass
